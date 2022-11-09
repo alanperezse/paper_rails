@@ -1,6 +1,7 @@
 import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paper_rails/views/entry_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  CupertinoListTile _entryCard() {
+  CupertinoListTile _entryCard(context) {
     return CupertinoListTile(
       leading: _entryCardDate(),
       trailing: Icon(
@@ -33,6 +34,12 @@ class HomeScreen extends StatelessWidget {
       subtitle: const Text(
         '2:44PM • 3100 Sea Breeze • Cloudy',
         style: TextStyle(color: Colors.grey),
+      ),
+      onTap: () => Navigator.push(
+        context,
+        CupertinoPageRoute(builder: (BuildContext builder) {
+          return EntryScreen();
+        })
       ),
     );
   }
@@ -51,7 +58,7 @@ class HomeScreen extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: 100,
                   itemBuilder: (BuildContext context, int index) {
-                    return _entryCard();
+                    return _entryCard(context);
                   }
                 )
               )
