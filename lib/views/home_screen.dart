@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
       trailing: Icon(
         CupertinoIcons.forward
       ),
-      title: Row(children:[ Flexible(child: Text('Some very long string that would not fit in a line', overflow: TextOverflow.ellipsis))]),
+      title: Row(children:[ Flexible(child: Text('Entry 1', overflow: TextOverflow.ellipsis))]),
       subtitle: const Text(
         '2:44PM • 3100 Sea Breeze • Cloudy',
         style: TextStyle(color: Colors.grey),
@@ -44,48 +44,57 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _bottomToolBar() {
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Color(0xFFBCBBC1), width: 0)
+          )
+        ),
+        child: SizedBox(
+          height: 44,
+          child: Row(
+            children: [
+              const Spacer(),
+              CupertinoButton(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: const Text('Add'),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: const Text('Journal'),
-      ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: CupertinoScrollbar(
-                child: ListView.builder(
-                  itemCount: 100,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _entryCard(context);
-                  }
-                )
-              )
-            ),
-            Container(
-              decoration: const BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Color(0xFFBCBBC1), width: 0)
-                )
-              ),
-              child: SizedBox(
-                height: 44,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const Spacer(),
-                    CupertinoButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: const Text('Add'),
-                      onPressed: () {},
+      child: CustomScrollView(
+        slivers: [
+          const CupertinoSliverNavigationBar(
+            largeTitle: Text('Journal'),
+          ),
+          SliverFillRemaining(
+            child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: 100,
+                      itemBuilder: (context, index) {
+                        return _entryCard(context);
+                      }
                     )
-                  ],
-                ),
+                  ),
+                  _bottomToolBar()
+                ],
               ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
