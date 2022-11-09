@@ -44,19 +44,24 @@ class _EntryScreen extends State<EntryScreen> {
                 color: Colors.grey[700],
               ),
               Row(
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     'Reykjavik,\nIceland',
                     style: TextStyle(
                       color: Colors.grey
                     ),
                   ),
-                  Spacer(),
-                  Text(
-                    'Cloudy',
-                    style: TextStyle(
-                      color: Colors.grey
-                    ),
+                  const Spacer(),
+                  Column(
+                    children: const [
+                      Icon(CupertinoIcons.cloud, color: Colors.grey,),
+                      Text(
+                        '23 °C',
+                        style: TextStyle(
+                          color: Colors.grey
+                        ),
+                      )
+                    ]
                   ),
                 ],
               ),
@@ -83,7 +88,7 @@ class _EntryScreen extends State<EntryScreen> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: Row(
-                          children: [
+                          children: const [
                             Icon(CupertinoIcons.calendar),
                             Text(' Friday 30, 2022')
                           ],
