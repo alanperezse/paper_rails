@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class EntryScreen extends StatefulWidget {
   const EntryScreen({Key? key}): super(key: key);
@@ -14,7 +15,7 @@ class _EntryScreen extends State<EntryScreen> {
       onWillPop: () async => true,
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: const Text('Entry'),
+          backgroundColor: Colors.transparent,
           leading: CupertinoButton(
             padding: EdgeInsets.zero,
             child: const Text('Cancel'),
@@ -36,14 +37,35 @@ class _EntryScreen extends State<EntryScreen> {
               Expanded(
                 child: Column(
                   children: [
-                    Text('Reykjavik, Iceland'),
+                    const CupertinoTextField(
+                      placeholder: 'Title',
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      style: TextStyle(fontSize: 30),
+                    ),
                     Row(
-                      children: [
-                        Text('Reykjavik, Iceland'),
+                      children: const [
+                        Text(
+                          'Reykjavik,\nIceland',
+                          style: TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
                         Spacer(),
-                        Text('Cloudy'),
+                        Text(
+                          'Cloudy',
+                          style: TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
                       ],
                     ),
+                    CupertinoTextField(
+                        placeholder: 'Body',
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 8,
+                      ),
                   ],
                 )
               ),
@@ -62,11 +84,11 @@ class _EntryScreen extends State<EntryScreen> {
                         child: Row(
                           children: [
                             Icon(CupertinoIcons.calendar),
-                            Text(' 12/12/2022')
+                            Text(' Friday 30, 2022')
                           ],
                         ),
                         onPressed: () {},
-                      )
+                      ),
                     ],
                   ),
                 ),

@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
       trailing: Icon(
         CupertinoIcons.forward
       ),
-      title: Flexible(child: Text('Some very long string that would not fit in a line', overflow: TextOverflow.ellipsis)),
+      title: Row(children:[ Flexible(child: Text('Some very long string that would not fit in a line', overflow: TextOverflow.ellipsis))]),
       subtitle: const Text(
         '2:44PM • 3100 Sea Breeze • Cloudy',
         style: TextStyle(color: Colors.grey),
