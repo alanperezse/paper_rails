@@ -15,7 +15,20 @@ class _EntryScreen extends State<EntryScreen> {
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: const Text('Entry'),
-          trailing: Icon(CupertinoIcons.ellipsis),
+          leading: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: const Text('Save'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
         child: SafeArea(
           child: Column(
@@ -53,18 +66,7 @@ class _EntryScreen extends State<EntryScreen> {
                           ],
                         ),
                         onPressed: () {},
-                      ),
-                      Spacer(),
-                      CupertinoButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: Row(
-                          children: [
-                            Icon(CupertinoIcons.time),
-                            Text(' 12:00PM')
-                          ],
-                        ),
-                        onPressed: () {},
-                      ),
+                      )
                     ],
                   ),
                 ),
