@@ -10,27 +10,30 @@ class EntryScreen extends StatefulWidget {
 
 class _EntryScreen extends State<EntryScreen> {
   Widget _bottomToolBar() {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Color(0xFFBCBBC1), width: 0)
-        )
-      ),
-      child: SizedBox(
-        height: 44,
-        child: Row(
-          children: [
-            CupertinoButton(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                children: const [
-                  Icon(CupertinoIcons.calendar),
-                  Text(' Friday 30, 2022')
-                ],
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Color(0xFFBCBBC1), width: 0)
+          )
+        ),
+        child: SizedBox(
+          height: 44,
+          child: Row(
+            children: [
+              CupertinoButton(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  children: const [
+                    Icon(CupertinoIcons.calendar),
+                    Text(' Friday 30, 2022')
+                  ],
+                ),
+                onPressed: () {},
               ),
-              onPressed: () {},
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
