@@ -39,8 +39,15 @@ class _EntryScreen extends State<EntryScreen> {
                   children: [
                     const CupertinoTextField(
                       placeholder: 'Title',
-                      padding: EdgeInsets.symmetric(vertical: 20),
                       style: TextStyle(fontSize: 30),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Divider(
+                        height: 20,
+                        thickness: 1,
+                        color: Colors.grey[700],
+                      ),
                     ),
                     Row(
                       children: const [
@@ -61,6 +68,7 @@ class _EntryScreen extends State<EntryScreen> {
                     ),
                     CupertinoTextField(
                         placeholder: 'Body',
+                        autofocus: true,
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         keyboardType: TextInputType.multiline,
                         minLines: 1,
