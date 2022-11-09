@@ -26,6 +26,9 @@ class HomeScreen extends StatelessWidget {
   CupertinoListTile _entryCard() {
     return CupertinoListTile(
       leading: _entryCardDate(),
+      trailing: Icon(
+        CupertinoIcons.forward
+      ),
       title: Flexible(child: Text('Some very long string that would not fit in a line', overflow: TextOverflow.ellipsis)),
       subtitle: const Text(
         '2:44PM • 3100 Sea Breeze • Cloudy',
