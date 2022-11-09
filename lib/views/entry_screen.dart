@@ -34,47 +34,40 @@ class _EntryScreen extends State<EntryScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    const CupertinoTextField(
-                      placeholder: 'Title',
-                      style: TextStyle(fontSize: 30),
+              const CupertinoTextField(
+                placeholder: 'Title',
+                style: TextStyle(fontSize: 30),
+              ),
+              Divider(
+                height: 20,
+                thickness: 1,
+                color: Colors.grey[700],
+              ),
+              Row(
+                children: const [
+                  Text(
+                    'Reykjavik,\nIceland',
+                    style: TextStyle(
+                      color: Colors.grey
                     ),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Divider(
-                        height: 20,
-                        thickness: 1,
-                        color: Colors.grey[700],
-                      ),
+                  ),
+                  Spacer(),
+                  Text(
+                    'Cloudy',
+                    style: TextStyle(
+                      color: Colors.grey
                     ),
-                    Row(
-                      children: const [
-                        Text(
-                          'Reykjavik,\nIceland',
-                          style: TextStyle(
-                            color: Colors.grey
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          'Cloudy',
-                          style: TextStyle(
-                            color: Colors.grey
-                          ),
-                        ),
-                      ],
-                    ),
-                    CupertinoTextField(
-                        placeholder: 'Body',
-                        autofocus: true,
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 8,
-                      ),
-                  ],
+                  ),
+                ],
+              ),
+              const Expanded(
+                child: CupertinoTextField(
+                  placeholder: 'Body',
+                  minLines: null,
+                  maxLines: null,
+                  expands: true,
+                  textAlignVertical: TextAlignVertical.top,
+                  padding: EdgeInsets.symmetric(vertical: 10)
                 )
               ),
               Container(
