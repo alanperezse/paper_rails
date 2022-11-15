@@ -1,6 +1,7 @@
 import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paper_rails/models/Entry.dart';
 import 'package:paper_rails/views/entry_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -35,16 +36,11 @@ class HomeScreen extends StatelessWidget {
         '2:44PM • 3100 Sea Breeze • Cloudy',
         style: TextStyle(color: Colors.grey),
       ),
-      onTap: () => Navigator.push(
-        context,
-        CupertinoPageRoute(builder: (BuildContext builder) {
-          return EntryScreen();
-        })
-      ),
+      onTap: () => _editEntry(context)
     );
   }
 
-  Widget _bottomToolBar() {
+  Widget _bottomToolBar(BuildContext context) {
     return SafeArea(
       top: false,
       child: Container(
@@ -61,12 +57,34 @@ class HomeScreen extends StatelessWidget {
               CupertinoButton(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: const Text('Add'),
-                onPressed: () {},
+                onPressed: () => _addEntry(context),
               ),
             ],
           ),
         ),
       )
+    );
+  }
+
+  void _editEntry(BuildContext context) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext builder) {
+        var datetime = DateTime(2022, 11, 30);
+        var entry = Entry(datetime);
+        return EntryScreen(entry: entry);
+      })
+    );
+  }
+
+  void _addEntry(BuildContext context) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext context) {
+        var datetime = DateTime(2022, 11, 30);
+        var entry = Entry(datetime);
+        return EntryScreen(entry: entry);
+      })
     );
   }
 
@@ -90,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                       }
                     )
                   ),
-                  _bottomToolBar()
+                  _bottomToolBar(context)
                 ],
               ),
           )
