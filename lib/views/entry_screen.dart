@@ -72,7 +72,7 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
 
       setState(() {
         widget._tempEntry.placemark = placemarks.first;
-        widget._tempEntry.entryWeatherInfo = EntryWeatherInfo(
+        widget._tempEntry.weatherInfo = WeatherInfo(
           weather.temperature?.celsius?.toInt(),
           weather.weatherConditionCode
         );
@@ -129,8 +129,8 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
 
   Widget _entryDetailsRow() {
     final placemark = widget._tempEntry.placemark;
-    final temperature = widget._tempEntry.entryWeatherInfo?.celsius;
-    final weather = widget._tempEntry.entryWeatherInfo?.weatherConditionCode;
+    final temperature = widget._tempEntry.weatherInfo?.celsius;
+    final weather = widget._tempEntry.weatherInfo?.weatherConditionCode;
 
     return Row(
       children: [
