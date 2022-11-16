@@ -71,7 +71,11 @@ class HomeScreen extends StatelessWidget {
       context,
       CupertinoPageRoute(builder: (BuildContext builder) {
         var datetime = DateTime(2022, 11, 30);
-        var entry = Entry(datetime);
+        var entry = Entry(
+          null,
+          null,
+          datetime
+        );
         return EntryScreen(entry: entry);
       })
     );
@@ -82,7 +86,11 @@ class HomeScreen extends StatelessWidget {
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
         var datetime = DateTime(2022, 11, 30);
-        var entry = Entry(datetime);
+        var entry = Entry(
+          null,
+          null,
+          datetime,
+        );
         return EntryScreen(entry: entry);
       })
     );

@@ -23,10 +23,24 @@ class EntryScreen extends StatefulWidget {
 }
 
 class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
+  late TextEditingController _titleController;
+  late TextEditingController _bodyController;
+
   @override
   void initState() {
-    super.initState();
+    // Add 
     _setEntryInfo();
+
+    // Add listeners 
+    super.initState();
+    _titleController = TextEditingController(text: widget._tempEntry.title)
+    ..addListener(() {
+      widget._tempEntry.title = _titleController.text;
+    });
+    _bodyController = TextEditingController(text: widget._tempEntry.body)
+    ..addListener(() {
+      widget._tempEntry.body = _bodyController.text;
+    });
   }
 
   void _setEntryInfo() async {
@@ -190,13 +204,6 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
         style: TextStyle(color: Colors.grey)
       );
     }
-    // switch (code) {
-    //   case value:
-        
-    //     break;
-    //   default:
-    //     const Text('No data available');
-    // }
   }
 
   @override
