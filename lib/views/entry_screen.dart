@@ -1,22 +1,47 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
+import 'package:paper_rails/utilities/location.dart';
 
 import '../models/Entry.dart';
 
 class EntryScreen extends StatefulWidget {
   late final Entry _tempEntry;
 
-  EntryScreen({super.key, required Entry entry}) {
+  EntryScreen({super.key, Entry? entry}) {
     // Initialize temp entry
-    _tempEntry = entry.clone();
+    if (entry == null) {
+      _tempEntry = Entry(null);
+    } else {
+      _tempEntry = entry.clone();
+    }
   }
 
   @override
   State<EntryScreen> createState() => _EntryScreen();
 }
 
-class _EntryScreen extends State<EntryScreen> {
+class _EntryScreen extends State<EntryScreen> with Locator {
+  @override
+  void initState() {
+    super.initState();
+    _setUserLocation();
+  }
+
+  void _setUserLocation() async {
+    try {
+      final position = await determinePosition();
+      final placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      print(placemarks.first);
+      setState(() {
+        widget._tempEntry.placemark = placemarks.first;
+      });
+    } catch(error) {
+      print(error);
+    }
+  }
+
   void _selectDate() {
     showCupertinoModalPopup<void>(
       context: context,
@@ -33,10 +58,10 @@ class _EntryScreen extends State<EntryScreen> {
         child: SafeArea(
           top: false,
           child: CupertinoDatePicker(
-            initialDateTime: widget._tempEntry.created_at,
+            initialDateTime: widget._tempEntry.createdAt,
             mode: CupertinoDatePickerMode.date,
             onDateTimeChanged: (DateTime newDate) {
-              setState(() => widget._tempEntry.created_at = newDate);
+              setState(() => widget._tempEntry.createdAt = newDate);
             },
           )
         ),
@@ -64,7 +89,7 @@ class _EntryScreen extends State<EntryScreen> {
                   children: [
                     const Icon(CupertinoIcons.calendar),
                     Text(
-                      ' ${DateFormat('yMMMMEEEEd').format(widget._tempEntry.created_at)}'
+                      ' ${DateFormat('yMMMMEEEEd').format(widget._tempEntry.createdAt)}'
                     )
                   ],
                 ),
@@ -74,6 +99,36 @@ class _EntryScreen extends State<EntryScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _entryDetailsRow() {
+    final placemark = widget._tempEntry.placemark;
+
+    return Row(
+      children: [
+        Text(
+          placemark == null ?
+            '---\n' :
+            '${placemark.street}\n${placemark.locality}'
+          ,
+          style: const TextStyle(
+            color: Colors.grey
+          ),
+        ),
+        const Spacer(),
+        Column(
+          children: const [
+            Icon(CupertinoIcons.cloud, color: Colors.grey,),
+            Text(
+              '23 °C',
+              style: TextStyle(
+                color: Colors.grey
+              ),
+            )
+          ]
+        ),
+      ],
     );
   }
 
@@ -111,28 +166,7 @@ class _EntryScreen extends State<EntryScreen> {
                 thickness: 1,
                 color: Colors.grey[700],
               ),
-              Row(
-                children: [
-                  const Text(
-                    'Reykjavik,\nIceland',
-                    style: TextStyle(
-                      color: Colors.grey
-                    ),
-                  ),
-                  const Spacer(),
-                  Column(
-                    children: const [
-                      Icon(CupertinoIcons.cloud, color: Colors.grey,),
-                      Text(
-                        '23 °C',
-                        style: TextStyle(
-                          color: Colors.grey
-                        ),
-                      )
-                    ]
-                  ),
-                ],
-              ),
+              _entryDetailsRow(),
               const Expanded(
                 child: CupertinoTextField(
                   placeholder: 'Body',

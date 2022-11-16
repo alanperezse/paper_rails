@@ -39,6 +39,8 @@ dependencies:
   cupertino_list_tile: ^0.2.1
   sqflite: ^2.2.0+3
   intl: ^0.17.0
+  geolocator: ^9.0.2
+  geocoding: ^2.0.5
 
 dev_dependencies:
   flutter_test:

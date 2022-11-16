@@ -1,9 +1,14 @@
-class Entry {
-  DateTime created_at;
+import 'package:geocoding/geocoding.dart';
 
-  Entry(this.created_at);
+class Entry {
+  late DateTime createdAt;
+  Placemark? placemark;
+
+  Entry([DateTime? createdAt, this.placemark]) {
+    this.createdAt = createdAt ?? DateTime.now();
+  }
 
   Entry clone() {
-    return Entry(created_at);
+    return Entry(createdAt, placemark);
   }
 }
