@@ -43,6 +43,27 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
     });
   }
 
+  void _showDialog(Widget child) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 216,
+        padding: const EdgeInsets.only(top: 6.0),
+        // The Bottom margin is provided to align the popup above the system navigation bar.
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        // Provide a background color for the popup.
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        // Use a SafeArea widget to avoid system overlaps.
+        child: SafeArea(
+          top: false,
+          child: child,
+        ),
+      )
+    );
+  }
+
   void _setEntryInfo() async {
     try {
       final position = await determinePosition();
@@ -62,61 +83,47 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   }
 
   void _selectDate() {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => Container(
-        height: 216,
-        padding: const EdgeInsets.only(top: 6.0),
-        // The Bottom margin is provided to align the popup above the system navigation bar.
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        // Provide a background color for the popup.
-        color: CupertinoColors.systemBackground.resolveFrom(context),
-        // Use a SafeArea widget to avoid system overlaps.
-        child: SafeArea(
-          top: false,
-          child: CupertinoDatePicker(
-            initialDateTime: widget._tempEntry.createdAt,
-            mode: CupertinoDatePickerMode.date,
-            onDateTimeChanged: (DateTime newDate) {
-              setState(() => widget._tempEntry.createdAt = newDate);
-            },
-          )
-        ),
+    _showDialog(
+      CupertinoDatePicker(
+        initialDateTime: widget._tempEntry.createdAt,
+        mode: CupertinoDatePickerMode.date,
+        onDateTimeChanged: (DateTime newDate) {
+          setState(() {
+            var newDateTime = DateTime(
+              newDate.year,
+              newDate.month,
+              newDate.day,
+              widget._tempEntry.createdAt.hour,
+              widget._tempEntry.createdAt.minute,
+              widget._tempEntry.createdAt.second,
+              widget._tempEntry.createdAt.millisecond,
+              widget._tempEntry.createdAt.microsecond,
+            );
+            widget._tempEntry.createdAt = newDateTime;
+          });
+        },
       )
     );
   }
 
-  Widget _bottomToolBar() {
-    return SafeArea(
-      top: false,
-      child: Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Color(0xFFBCBBC1), width: 0)
-          )
-        ),
-        child: SizedBox(
-          height: 44,
-          child: Row(
-            children: [
-              CupertinoButton(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Row(
-                  children: [
-                    const Icon(CupertinoIcons.calendar),
-                    Text(
-                      ' ${DateFormat('yMMMMEEEEd').format(widget._tempEntry.createdAt)}'
-                    )
-                  ],
-                ),
-                onPressed: () => _selectDate(),
-              ),
-            ],
-          ),
-        ),
+  void _selectTime() {
+
+    _showDialog(
+      CupertinoDatePicker(
+        initialDateTime: widget._tempEntry.createdAt,
+        mode: CupertinoDatePickerMode.time,
+        // This is called when the user changes the time.
+        onDateTimeChanged: (DateTime newTime) {
+          setState(() => widget._tempEntry.createdAt = newTime);
+        },
       ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return const CupertinoTextField(
+      placeholder: 'Title',
+      style: TextStyle(fontSize: 30),
     );
   }
 
@@ -206,6 +213,68 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
     }
   }
 
+  Widget _buildBody() {
+    return const Expanded(
+      child: CupertinoTextField(
+        placeholder: 'Body',
+        minLines: null,
+        maxLines: null,
+        expands: true,
+        textAlignVertical: TextAlignVertical.top,
+        padding: EdgeInsets.symmetric(vertical: 10)
+      )
+    );
+  }
+
+  Widget _bottomToolBar() {
+    final date = widget._tempEntry.createdAt;
+
+    final timeString = DateFormat(DateFormat.HOUR_MINUTE).format(date);
+    final dateString = DateFormat(DateFormat.YEAR_ABBR_MONTH_WEEKDAY_DAY).format(date);
+
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Color(0xFFBCBBC1), width: 0)
+          )
+        ),
+        child: SizedBox(
+          height: 44,
+          child: Row(
+            children: [
+              CupertinoButton(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  children: [
+                    const Icon(CupertinoIcons.calendar),
+                    Text(
+                      ' $dateString'
+                    )
+                  ],
+                ),
+                onPressed: () => _selectDate(),
+              ),
+              CupertinoButton(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  children: [
+                    const Icon(CupertinoIcons.time),
+                    Text(
+                      ' $timeString'
+                    )
+                  ],
+                ),
+                onPressed: () => _selectTime(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -231,26 +300,14 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
         child: SafeArea(
           child: Column(
             children: [
-              const CupertinoTextField(
-                placeholder: 'Title',
-                style: TextStyle(fontSize: 30),
-              ),
+              _buildTitle(),
               Divider(
                 height: 20,
                 thickness: 1,
                 color: Colors.grey[700],
               ),
               _entryDetailsRow(),
-              const Expanded(
-                child: CupertinoTextField(
-                  placeholder: 'Body',
-                  minLines: null,
-                  maxLines: null,
-                  expands: true,
-                  textAlignVertical: TextAlignVertical.top,
-                  padding: EdgeInsets.symmetric(vertical: 10)
-                )
-              ),
+              _buildBody(),
               _bottomToolBar()
             ],
           ),
