@@ -56,9 +56,6 @@ class _HomeScreen extends State<HomeScreen> {
 
     return CupertinoListTile(
       leading: _entryCardDate(datetime),
-      trailing: const Icon(
-        CupertinoIcons.forward
-      ),
       title: Row(
         children: [
           Flexible(child: 
