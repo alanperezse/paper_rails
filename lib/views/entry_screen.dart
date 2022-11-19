@@ -2,34 +2,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
+import 'package:paper_rails/db/entry_db.dart';
 import 'package:paper_rails/utilities/location.dart';
 import 'package:paper_rails/utilities/weather_evaluator.dart';
-import '../models/Entry.dart';
+import '../models/entry.dart';
 
 class EntryScreen extends StatefulWidget {
-  late final Entry _tempEntry;
+  final Entry _tempEntry;
 
-  EntryScreen({super.key, Entry? entry}) {
-    // Initialize temp entry
-    if (entry == null) {
-      _tempEntry = Entry(null);
-    } else {
-      _tempEntry = entry.clone();
-    }
-  }
+  const EntryScreen({super.key, required entry}): _tempEntry = entry;
 
   @override
   State<EntryScreen> createState() => _EntryScreen();
 }
 
 class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
-  late TextEditingController _titleController;
-  late TextEditingController _bodyController;
+  late final TextEditingController _titleController;
+  late final TextEditingController _bodyController;
+  late final Future<EntryCollection> _entryCollection;
 
   @override
   void initState() {
     // Add 
     _setEntryInfo();
+
+    // Set collection
+    _entryCollection = EntryCollection.collection;
 
     // Add listeners 
     super.initState();
@@ -94,6 +92,14 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
     } catch(error) {
       print(error);
     }
+  }
+
+  void _create() async {
+    final collection = await _entryCollection;
+    collection.create(widget._tempEntry);
+    print('Success');
+    if (!mounted) return;
+    Navigator.pop(context);
   }
 
   void _selectDate() {
@@ -305,10 +311,8 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
           ),
           trailing: CupertinoButton(
             padding: EdgeInsets.zero,
+            onPressed: _create,
             child: const Text('Save'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
           ),
         ),
         child: SafeArea(

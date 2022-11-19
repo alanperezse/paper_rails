@@ -1,7 +1,8 @@
 import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:paper_rails/models/Entry.dart';
+import 'package:paper_rails/db/entry_db.dart';
+import 'package:paper_rails/models/entry.dart';
 import 'package:paper_rails/views/entry_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -81,7 +82,6 @@ class HomeScreen extends StatelessWidget {
     Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        var datetime = DateTime(2022, 11, 30);
         var entry = Entry()
           ..createdAt = DateTime.now();
         return EntryScreen(entry: entry);
@@ -89,8 +89,14 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  test() async {
+    var coll = await EntryCollection.collection;
+    coll.getAll();
+  }
+
   @override
   Widget build(BuildContext context) {
+    test();
     return CupertinoPageScaffold(
       child: CustomScrollView(
         slivers: [
