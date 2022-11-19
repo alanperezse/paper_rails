@@ -1,6 +1,7 @@
 import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:paper_rails/db/entry_db.dart';
 import 'package:paper_rails/models/entry.dart';
@@ -14,11 +15,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
+  late final Future<EntryCollection> _entryCollection;
+
   late List<Entry> _entries = [];
 
   @override
   void initState() {
     super.initState();
+
+    // Set collection
+    _entryCollection = EntryCollection.collection;
 
     _initEntries();
   }
@@ -51,36 +57,49 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 
-  CupertinoListTile _entryCard(BuildContext context, Entry entry) {
+  Widget _entryCard(BuildContext context, Entry entry) {
     final datetime = entry.createdAt;
 
-    return CupertinoListTile(
-      leading: _entryCardDate(datetime),
-      title: Row(
+    return Slidable(
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
         children: [
-          Flexible(child: 
-            Text(
-              entry.title ?? '',
-              overflow: TextOverflow.ellipsis
-            )
-          )
-        ]
-      ),
-      // subtitle: const Text(
-      //   '2:44PM • 3100 Sea Breeze • Cloudy',
-      //   style: TextStyle(color: Colors.grey),
-      // ),
-      subtitle: Row(
-        children: [
-          Icon(CupertinoIcons.cloud),
-          const SizedBox(width: 20,),
-          Text(
-            '${DateFormat(DateFormat.HOUR_MINUTE).format(entry.createdAt)} • ${entry.placeInfo!.locality}, ${entry.placeInfo!.country}',
-            style: const TextStyle(color: Colors.grey),
+          SlidableAction(
+            backgroundColor: Colors.red,
+            onPressed: (BuildContext context) => _onDelete(entry.id!),
+            label: 'Delete',
+            icon: CupertinoIcons.trash_fill,
           )
         ],
       ),
-      onTap: () => _editEntry(context, entry)
+      child: CupertinoListTile(
+        leading: _entryCardDate(datetime),
+        title: Row(
+          children: [
+            Flexible(
+              child: Text(
+                entry.title ?? '',
+                overflow: TextOverflow.ellipsis
+              )
+            )
+          ]
+        ),
+        // subtitle: const Text(
+        //   '2:44PM • 3100 Sea Breeze • Cloudy',
+        //   style: TextStyle(color: Colors.grey),
+        // ),
+        subtitle: Row(
+          children: [
+            Icon(CupertinoIcons.cloud),
+            const SizedBox(width: 20,),
+            Text(
+              '${DateFormat(DateFormat.HOUR_MINUTE).format(entry.createdAt)} • ${entry.placeInfo!.locality}, ${entry.placeInfo!.country}',
+              style: const TextStyle(color: Colors.grey),
+            )
+          ],
+        ),
+        onTap: () => _editEntry(context, entry)
+      ),
     );
   }
 
@@ -110,13 +129,15 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 
-  void _editEntry(BuildContext context, Entry entry) {
-    Navigator.push(
+  void _editEntry(BuildContext context, Entry entry) async {
+    await Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext builder) {
         return EntryScreen(entry: entry);
       })
     );
+
+    setState(() {});
   }
 
   void _addEntry(BuildContext context) {
@@ -128,6 +149,14 @@ class _HomeScreen extends State<HomeScreen> {
         return EntryScreen(entry: entry);
       })
     );
+  }
+
+  void _onDelete(int id) async {
+    final collection = await _entryCollection;
+    await collection.delete(id);
+    setState(() {
+      _entries.removeWhere((element) => element.id == id);
+    });
   }
 
   @override

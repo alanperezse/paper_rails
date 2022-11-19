@@ -25,6 +25,8 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
 
   @override
   void initState() {
+    super.initState();
+
     // Set info only on new entries
     if (isNewEntry) {
       _setEntryInfo();
@@ -34,11 +36,11 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
     _entryCollection = EntryCollection.collection;
 
     // Add listeners 
-    super.initState();
     _titleController = TextEditingController(text: widget._tempEntry.title)
     ..addListener(() {
       widget._tempEntry.title = _titleController.text;
     });
+
     _bodyController = TextEditingController(text: widget._tempEntry.body)
     ..addListener(() {
       widget._tempEntry.body = _bodyController.text;
@@ -107,7 +109,11 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   }
 
   void _save() async {
-    // TODO
+    final collection = await _entryCollection;
+    collection.update(widget._tempEntry);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   void _selectDate() {
@@ -149,9 +155,10 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   }
 
   Widget _buildTitle() {
-    return const CupertinoTextField(
+    return CupertinoTextField(
       placeholder: 'Title',
-      style: TextStyle(fontSize: 30),
+      style: const TextStyle(fontSize: 30),
+      controller: _titleController,
     );
   }
 
@@ -242,14 +249,15 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   }
 
   Widget _buildBody() {
-    return const Expanded(
+    return Expanded(
       child: CupertinoTextField(
         placeholder: 'Body',
         minLines: null,
         maxLines: null,
         expands: true,
         textAlignVertical: TextAlignVertical.top,
-        padding: EdgeInsets.symmetric(vertical: 10)
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        controller: _bodyController,
       )
     );
   }

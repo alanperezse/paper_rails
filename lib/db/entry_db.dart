@@ -38,9 +38,8 @@ class EntryCollection extends Collection<Entry> {
   }
   
   @override
-  Future<void> delete(int object) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<int> delete(int object) async {
+    return await _db.delete(_entryTable, where: '$_id = ?', whereArgs: [object]);
   }
   
   @override
@@ -56,9 +55,13 @@ class EntryCollection extends Collection<Entry> {
   }
   
   @override
-  Future<void> update(Entry object) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<int> update(Entry object) async {
+    return await _db.update(
+      _entryTable,
+      _entryToMap(object)
+      // Allow update on all fields except id
+      ..removeWhere((key, value) => key == _id)
+    );
   }
 
   static Future<EntryCollection> _openCollection() async {
