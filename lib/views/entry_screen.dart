@@ -182,7 +182,10 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
         const Spacer(),
         Column(
           children: [
-            _conditionCodeToWidget(weather),
+            Icon(
+              conditionCodeToWidget(weather),
+              color: Colors.grey,
+            ),
             Text(
               temperature == null ?
                 '---' :
@@ -196,56 +199,6 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
         ),
       ],
     );
-  }
-
-  Widget _conditionCodeToWidget(int? code) {
-    if (code == null) {
-      return const Text(
-        'No data available',
-        style: TextStyle(color: Colors.grey)
-      );
-    }
-    if (200 <= code && code < 300) {
-      return const Icon(
-        CupertinoIcons.cloud_bolt_fill,
-        color: Colors.grey,
-      );
-    } else if (300 <= code && code < 500) {
-      return const Icon(
-        CupertinoIcons.cloud_drizzle_fill,
-        color: Colors.grey,
-      );
-    } else if (500 <= code && code < 600) {
-      return const Icon(
-        CupertinoIcons.cloud_heavyrain_fill,
-        color: Colors.grey,
-      );
-    } else if (600 <= code && code < 700) {
-      return const Icon(
-        CupertinoIcons.snow,
-        color: Colors.grey,
-      );
-    } else if (700 <= code && code < 800) {
-      return const Icon(
-        CupertinoIcons.cloud_fog_fill,
-        color: Colors.grey,
-      );
-    } else if (code == 800) {
-      return const Icon(
-        CupertinoIcons.sun_max_fill,
-        color: Colors.grey,
-      );
-    } else if (801 <= code && code < 900) {
-      return const Icon(
-        CupertinoIcons.cloud_fill,
-        color: Colors.grey,
-      );
-    } else {
-      return const Text(
-        'No data available',
-        style: TextStyle(color: Colors.grey)
-      );
-    }
   }
 
   Widget _buildBody() {

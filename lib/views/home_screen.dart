@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:paper_rails/db/entry_db.dart';
 import 'package:paper_rails/models/entry.dart';
+import 'package:paper_rails/utilities/weather_evaluator.dart';
 import 'package:paper_rails/views/entry_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +15,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreen();
 }
 
-class _HomeScreen extends State<HomeScreen> {
+class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
   late final Future<EntryCollection> _entryCollection;
 
   late List<Entry> _entries = [];
@@ -90,7 +91,9 @@ class _HomeScreen extends State<HomeScreen> {
         // ),
         subtitle: Row(
           children: [
-            Icon(CupertinoIcons.cloud),
+            Icon(
+              conditionCodeToWidget(entry.weatherInfo?.weatherConditionCode),
+            ),
             const SizedBox(width: 20,),
             Text(
               '${DateFormat(DateFormat.HOUR_MINUTE).format(entry.createdAt)} • ${entry.placeInfo!.locality}, ${entry.placeInfo!.country}',
