@@ -51,10 +51,8 @@ class EntryCollection extends Collection<Entry> {
   
   @override
   Future<List<Entry>> getAll() async {
-    var rtn = await _db.query(_entryTable);
-    print(rtn);
-    List<Entry> test = [];
-    return test;
+    final entriesMap = await _db.query(_entryTable);
+    return entriesMap.map((map) => _fromMap(map)).toList();
   }
   
   @override
@@ -100,7 +98,7 @@ class EntryCollection extends Collection<Entry> {
     };
   }
 
-  Entry fromMap(Map<String, dynamic> map) {
+  Entry _fromMap(Map<String, dynamic> map) {
     final placeInfo = PlaceInfo(
       map[_street],
       map[_locality],
@@ -116,7 +114,7 @@ class EntryCollection extends Collection<Entry> {
       map[_id],
       map[_title],
       map[_body],
-      DateTime(map[_createdAt]),
+      DateTime.parse(map[_createdAt]),
       placeInfo,
       weatherInfo
     );

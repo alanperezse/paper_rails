@@ -21,10 +21,14 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   late final TextEditingController _bodyController;
   late final Future<EntryCollection> _entryCollection;
 
+  bool get isNewEntry => widget._tempEntry.id == null;
+
   @override
   void initState() {
-    // Add 
-    _setEntryInfo();
+    // Set info only on new entries
+    if (isNewEntry) {
+      _setEntryInfo();
+    }
 
     // Set collection
     _entryCollection = EntryCollection.collection;
@@ -97,9 +101,13 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   void _create() async {
     final collection = await _entryCollection;
     collection.create(widget._tempEntry);
-    print('Success');
-    if (!mounted) return;
-    Navigator.pop(context);
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
+  void _save() async {
+    // TODO
   }
 
   void _selectDate() {
@@ -309,11 +317,17 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
               Navigator.pop(context);
             },
           ),
-          trailing: CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: _create,
-            child: const Text('Save'),
-          ),
+          trailing: isNewEntry ?
+            CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: _create,
+              child: const Text('Create'),
+            ) :
+            CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: _save,
+              child: const Text('Save'),
+            )
         ),
         child: SafeArea(
           child: Column(
