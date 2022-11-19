@@ -51,6 +51,7 @@ class EntryCollection extends Collection<Entry> {
   @override
   Future<List<Entry>> getAll() async {
     final entriesMap = await _db.query(_entryTable);
+    print(entriesMap);
     return entriesMap.map((map) => _fromMap(map)).toList();
   }
   
@@ -60,7 +61,9 @@ class EntryCollection extends Collection<Entry> {
       _entryTable,
       _entryToMap(object)
       // Allow update on all fields except id
-      ..removeWhere((key, value) => key == _id)
+      ..removeWhere((key, value) => key == _id),
+      where: '$_id = ?',
+      whereArgs: [object.id!]
     );
   }
 
