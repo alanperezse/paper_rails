@@ -1,13 +1,14 @@
 import 'package:geocoding/geocoding.dart';
 
 class Entry {
+  int? id;
   String? title;
   String? body;
   late DateTime createdAt;
-  Placemark? placemark;
-  EntryWeatherInfo? entryWeatherInfo;
+  PlaceInfo? placeInfo;
+  WeatherInfo? weatherInfo;
 
-  Entry([this.title, this.body, DateTime? createdAt, this.placemark, this.entryWeatherInfo]) {
+  Entry([this.title, this.body, DateTime? createdAt, this.placeInfo, this.weatherInfo]) {
     this.createdAt = createdAt ?? DateTime.now();
   }
 
@@ -16,15 +17,23 @@ class Entry {
       title,
       body,
       createdAt,
-      placemark,
-      entryWeatherInfo,
+      placeInfo,
+      weatherInfo,
     );
   }
 }
 
-class EntryWeatherInfo {
+class WeatherInfo {
   int? celsius;
   int? weatherConditionCode;
 
-  EntryWeatherInfo(this.celsius, this.weatherConditionCode);
+  WeatherInfo([this.celsius, this.weatherConditionCode]);
+}
+
+class PlaceInfo {
+  String? street;
+  String? locality;
+  String? country;
+
+  PlaceInfo([this.street, this.locality, this.country]);
 }

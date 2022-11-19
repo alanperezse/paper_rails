@@ -67,16 +67,30 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   void _setEntryInfo() async {
     try {
       final position = await determinePosition();
-      final placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-      final weather = await determineWeather(position.latitude, position.longitude);
+      placemarkFromCoordinates(position.latitude, position.longitude)
+      .then((placemarks) {
+        final placemark = placemarks.first;
+        setState(() {
+          widget._tempEntry.placeInfo = PlaceInfo(
+            placemark.street,
+            placemark.locality,
+            placemark.country
+          );
+        });
+      })
+      .catchError((error) => print(error));
 
-      setState(() {
-        widget._tempEntry.placemark = placemarks.first;
-        widget._tempEntry.weatherInfo = WeatherInfo(
-          weather.temperature?.celsius?.toInt(),
-          weather.weatherConditionCode
-        );
-      });
+      determineWeather(position.latitude, position.longitude)
+      .then((weather) {
+        setState(() {
+          widget._tempEntry.weatherInfo = WeatherInfo(
+            weather.temperature?.celsius?.toInt(),
+            weather.weatherConditionCode
+          );
+        });
+      })
+      .catchError((error) => print(error));
+
     } catch(error) {
       print(error);
     }
@@ -128,17 +142,17 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   }
 
   Widget _entryDetailsRow() {
-    final placemark = widget._tempEntry.placemark;
+    final placeInfo = widget._tempEntry.placeInfo;
     final temperature = widget._tempEntry.weatherInfo?.celsius;
     final weather = widget._tempEntry.weatherInfo?.weatherConditionCode;
 
     return Row(
       children: [
         Text(
-          placemark == null ?
+          placeInfo == null ?
             '---\n' :
-            '${placemark.street}\n'
-            '${placemark.locality}'
+            '${placeInfo.street}\n'
+            '${placeInfo.locality}'
           ,
           style: const TextStyle(
             color: Colors.grey
