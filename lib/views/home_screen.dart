@@ -137,11 +137,15 @@ class _HomeScreen extends State<HomeScreen> {
       })
     );
 
-    setState(() {});
+    final collection = await EntryCollection.collection;
+    _entries = await collection.getAll();
+
+    setState(() {
+    });
   }
 
-  void _addEntry(BuildContext context) {
-    Navigator.push(
+  void _addEntry(BuildContext context) async  {
+    await Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
         var entry = Entry()
@@ -149,14 +153,20 @@ class _HomeScreen extends State<HomeScreen> {
         return EntryScreen(entry: entry);
       })
     );
+
+    final collection = await EntryCollection.collection;
+    _entries = await collection.getAll();
+
+    setState(() {});
   }
 
   void _onDelete(int id) async {
     final collection = await _entryCollection;
     await collection.delete(id);
-    setState(() {
-      _entries.removeWhere((element) => element.id == id);
-    });
+
+    _entries = await collection.getAll();
+
+    setState(() {});
   }
 
   @override

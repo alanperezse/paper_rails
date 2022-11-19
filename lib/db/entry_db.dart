@@ -50,8 +50,10 @@ class EntryCollection extends Collection<Entry> {
   
   @override
   Future<List<Entry>> getAll() async {
-    final entriesMap = await _db.query(_entryTable);
-    print(entriesMap);
+    final entriesMap = await _db.query(
+      _entryTable,
+      orderBy: '$_createdAt DESC'
+    );
     return entriesMap.map((map) => _fromMap(map)).toList();
   }
   
