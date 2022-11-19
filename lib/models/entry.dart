@@ -1,5 +1,3 @@
-import 'package:geocoding/geocoding.dart';
-
 class Entry {
   int? id;
   String? title;
@@ -8,12 +6,13 @@ class Entry {
   PlaceInfo? placeInfo;
   WeatherInfo? weatherInfo;
 
-  Entry([this.title, this.body, DateTime? createdAt, this.placeInfo, this.weatherInfo]) {
+  Entry([this.id, this.title, this.body, DateTime? createdAt, this.placeInfo, this.weatherInfo]) {
     this.createdAt = createdAt ?? DateTime.now();
   }
 
   Entry clone() {
     return Entry(
+      id,
       title,
       body,
       createdAt,
