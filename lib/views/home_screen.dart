@@ -188,7 +188,41 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
                       padding: EdgeInsets.zero,
                       itemCount: _entries.length,
                       itemBuilder: (context, index) {
-                        return _entryCard(context, _entries[index]);
+                        final currEntry = _entries[index];
+                        final prevEntry = index > 0 ? _entries[index - 1] : null;
+                        final entryCard = _entryCard(context, currEntry);
+
+                        var hasDateIndicator = false;
+                        if (
+                          index == 0
+                          || currEntry.createdAt.month != prevEntry!.createdAt.month
+                          || currEntry.createdAt.year != prevEntry.createdAt.year) {
+                          hasDateIndicator = true;
+                        }
+
+                        if (hasDateIndicator) {
+                          final month = DateFormat(DateFormat.MONTH).format(currEntry.createdAt);
+                          final year = currEntry.createdAt.year.toString();
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(top: 10, bottom: 20),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'From $month $year',
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                  )
+                                ),
+                              ),
+                              entryCard
+                            ],
+                          );
+                        } else {
+                          return entryCard;
+                        }
                       }
                     )
                   ),
