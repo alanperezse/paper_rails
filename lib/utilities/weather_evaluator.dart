@@ -11,7 +11,7 @@ mixin WeatherEvaluator {
 
   IconData? conditionCodeToWidget(int? code) {
     if (code == null) {
-      return null;
+      return CupertinoIcons.clear;
     }
     if (200 <= code && code < 300) {
       return CupertinoIcons.cloud_bolt_fill;
@@ -28,7 +28,7 @@ mixin WeatherEvaluator {
     } else if (801 <= code && code < 900) {
       return CupertinoIcons.cloud_fill;
     } else {
-      return null;
+      return CupertinoIcons.clear;
     }
   }
 }

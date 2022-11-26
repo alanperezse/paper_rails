@@ -175,7 +175,7 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
             Text(
               placeInfo == null ?
                 '  ---' :
-                '  ${placeInfo.street}, ${placeInfo.locality}'
+                '  ${placeInfo.street ?? '---'}, ${placeInfo.locality ?? '---'}'
               ,
               style: const TextStyle(
                 color: Colors.grey
