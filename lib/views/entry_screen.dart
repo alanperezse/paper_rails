@@ -167,23 +167,27 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
     final temperature = widget._tempEntry.weatherInfo?.celsius;
     final weather = widget._tempEntry.weatherInfo?.weatherConditionCode;
 
-    return Row(
+    return Column(
       children: [
+        Row(
+          children: [
             const Icon(CupertinoIcons.location_solid,
               color: Colors.grey,
             ),
             Text(
               placeInfo == null ?
                 '---\n' :
-            ' ${placeInfo.street},\n'
-            ' ${placeInfo.locality}'
-          ,
-          style: const TextStyle(
-            color: Colors.grey
-          ),
+                '  ${placeInfo.street}, ${placeInfo.locality}'
+              ,
+              style: const TextStyle(
+                color: Colors.grey
+              ),
+              overflow: TextOverflow.fade,
+            ),
+          ],
         ),
-        const Spacer(),
-        Column(
+        const SizedBox(height: 10,),
+        Row(
           children: [
             Icon(
               conditionCodeToWidget(weather),
@@ -191,8 +195,8 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
             ),
             Text(
               temperature == null ?
-                '---' :
-                '$temperature °C'
+                '  ---' :
+                '  $temperature °C'
               ,
               style: const TextStyle(
                 color: Colors.grey
