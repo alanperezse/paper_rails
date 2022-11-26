@@ -169,11 +169,14 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
 
     return Row(
       children: [
-        Text(
-          placeInfo == null ?
-            '---\n' :
-            '${placeInfo.street}\n'
-            '${placeInfo.locality}'
+            const Icon(CupertinoIcons.location_solid,
+              color: Colors.grey,
+            ),
+            Text(
+              placeInfo == null ?
+                '---\n' :
+            ' ${placeInfo.street},\n'
+            ' ${placeInfo.locality}'
           ,
           style: const TextStyle(
             color: Colors.grey
