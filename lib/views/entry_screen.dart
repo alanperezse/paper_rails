@@ -308,6 +308,9 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
                 color: Colors.grey[700],
               ),
               _entryDetailsRow(),
+              const SizedBox(
+                height: 10,
+              ),
               _buildBody(),
               _bottomToolBar()
             ],
