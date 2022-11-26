@@ -20,15 +20,16 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   late final TextEditingController _titleController;
   late final TextEditingController _bodyController;
   late final Future<EntryCollection> _entryCollection;
+  bool _isDoneSettingEntryInfo = false;
 
-  bool get isNewEntry => widget._tempEntry.id == null;
+  bool get _isNewEntry => widget._tempEntry.id == null;
 
   @override
   void initState() {
     super.initState();
 
     // Set info only on new entries
-    if (isNewEntry) {
+    if (_isNewEntry) {
       _setEntryInfo();
     }
 
@@ -71,33 +72,24 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   void _setEntryInfo() async {
     try {
       final position = await determinePosition();
-      placemarkFromCoordinates(position.latitude, position.longitude)
-      .then((placemarks) {
-        final placemark = placemarks.first;
-        setState(() {
-          widget._tempEntry.placeInfo = PlaceInfo(
-            placemark.street,
-            placemark.locality,
-            placemark.country
-          );
-        });
-      })
-      .catchError((error) => print(error));
+      final placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      final placemark = placemarks.first;
+      widget._tempEntry.placeInfo = PlaceInfo(
+        placemark.street,
+        placemark.locality,
+        placemark.country
+      );
 
-      determineWeather(position.latitude, position.longitude)
-      .then((weather) {
-        setState(() {
-          widget._tempEntry.weatherInfo = WeatherInfo(
-            weather.temperature?.celsius?.toInt(),
-            weather.weatherConditionCode
-          );
-        });
-      })
-      .catchError((error) => print(error));
-
+      final weather = await determineWeather(position.latitude, position.longitude);
+      widget._tempEntry.weatherInfo = WeatherInfo(
+        weather.temperature?.celsius?.toInt(),
+        weather.weatherConditionCode
+      );
     } catch(error) {
       print(error);
     }
+
+    setState(() => _isDoneSettingEntryInfo = true);
   }
 
   void _create() async {
@@ -167,6 +159,12 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
     final temperature = widget._tempEntry.weatherInfo?.celsius;
     final weather = widget._tempEntry.weatherInfo?.weatherConditionCode;
 
+    if (_isNewEntry && !_isDoneSettingEntryInfo) {
+      return const CupertinoActivityIndicator(
+        radius: 10,
+      );
+    }
+
     return Column(
       children: [
         Row(
@@ -176,7 +174,7 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
             ),
             Text(
               placeInfo == null ?
-                '---\n' :
+                '  ---' :
                 '  ${placeInfo.street}, ${placeInfo.locality}'
               ,
               style: const TextStyle(
@@ -286,10 +284,12 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
               Navigator.pop(context);
             },
           ),
-          trailing: isNewEntry ?
+          trailing: _isNewEntry ?
             CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: _create,
+              onPressed: _isNewEntry && !_isDoneSettingEntryInfo ?
+                null :
+                _create,
               child: const Text('Create'),
             ) :
             CupertinoButton(
