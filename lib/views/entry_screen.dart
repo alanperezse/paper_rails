@@ -237,7 +237,7 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
           child: Row(
             children: [
               CupertinoButton(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
                   children: [
                     const Icon(CupertinoIcons.calendar),
@@ -248,8 +248,9 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
                 ),
                 onPressed: () => _selectDate(),
               ),
+              const Spacer(),
               CupertinoButton(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
                   children: [
                     const Icon(CupertinoIcons.time),
