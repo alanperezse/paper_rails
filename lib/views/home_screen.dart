@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
   late final Future<EntryCollection> _entryCollection;
 
-  late List<Entry> _entries = [];
+  late final List<List<Entry>> _entriesByMonthAndYear = [];
 
   @override
   void initState() {
@@ -32,7 +32,28 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
 
   void _initEntries() async {
     final collection = await EntryCollection.collection;
-    _entries = await collection.getAll();
+    final entries = await collection.getAll();
+
+    _entriesByMonthAndYear.clear();
+
+    Entry? prevEntry;
+    for (var currEntry in entries) {
+      final currMonth = currEntry.createdAt.month;
+      final currYear = currEntry.createdAt.year;
+
+      final prevMonth = prevEntry?.createdAt.month;
+      final prevYear = prevEntry?.createdAt.year;
+
+      // Entry does not correspond to same month or year as previous entry
+      if (currMonth != prevMonth || currYear != prevYear) {
+        _entriesByMonthAndYear.add([currEntry]);
+      } else {
+        _entriesByMonthAndYear.last.add(currEntry);
+      }
+
+      prevEntry = currEntry;
+    }
+
     setState(() {
     });
   }
@@ -140,11 +161,7 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
       })
     );
 
-    final collection = await EntryCollection.collection;
-    _entries = await collection.getAll();
-
-    setState(() {
-    });
+      _initEntries();
   }
 
   void _addEntry(BuildContext context) async  {
@@ -157,19 +174,14 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
       })
     );
 
-    final collection = await EntryCollection.collection;
-    _entries = await collection.getAll();
-
-    setState(() {});
+    _initEntries();
   }
 
   void _onDelete(int id) async {
     final collection = await _entryCollection;
     await collection.delete(id);
 
-    _entries = await collection.getAll();
-
-    setState(() {});
+    _initEntries();
   }
 
   @override
@@ -186,43 +198,19 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
                   Expanded(
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
-                      itemCount: _entries.length,
+                      itemCount: _entriesByMonthAndYear.length,
                       itemBuilder: (context, index) {
-                        final currEntry = _entries[index];
-                        final prevEntry = index > 0 ? _entries[index - 1] : null;
-                        final entryCard = _entryCard(context, currEntry);
+                        final monthAndYearSection = _entriesByMonthAndYear[index];
+                        final firstEntry = monthAndYearSection.first;
+                        final month = DateFormat(DateFormat.MONTH).format(firstEntry.createdAt);
+                        final year = DateFormat(DateFormat.YEAR).format(firstEntry.createdAt);
 
-                        var hasDateIndicator = false;
-                        if (
-                          index == 0
-                          || currEntry.createdAt.month != prevEntry!.createdAt.month
-                          || currEntry.createdAt.year != prevEntry.createdAt.year) {
-                          hasDateIndicator = true;
-                        }
-
-                        if (hasDateIndicator) {
-                          final month = DateFormat(DateFormat.MONTH).format(currEntry.createdAt);
-                          final year = currEntry.createdAt.year.toString();
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.only(top: 10, bottom: 20),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'From $month $year',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                  )
-                                ),
-                              ),
-                              entryCard
-                            ],
-                          );
-                        } else {
-                          return entryCard;
-                        }
+                        return CupertinoFormSection.insetGrouped(
+                          header: Text('$month $year'),
+                          children: monthAndYearSection.map((entry) {
+                            return _entryCard(context, entry);
+                          }).toList()
+                        );
                       }
                     )
                   ),
