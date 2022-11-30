@@ -92,7 +92,7 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
         children: [
           SlidableAction(
             backgroundColor: Colors.red,
-            onPressed: (BuildContext context) => _onDelete(entry.id!),
+            onPressed: (BuildContext context) => _showAlertDialog(context, entry),
             label: 'Delete',
             icon: CupertinoIcons.trash_fill,
           )
@@ -189,6 +189,61 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
     await collection.delete(id);
 
     _initEntries();
+  }
+
+  void _showAlertDialog(BuildContext context, Entry entry) {
+    final datetime = entry.createdAt;
+
+    final dateString = DateFormat(DateFormat.YEAR_MONTH_DAY).format(datetime);
+    final timeString = DateFormat(DateFormat.HOUR_MINUTE).format(datetime);
+
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Delete entry'),
+        // content: Text(
+        //   'Proceed to delete entry ${entry.title ?? ''} '
+        //   'created on $dateString at $timeString'
+        // ),
+        content: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            children: [
+              const TextSpan(text: 'Proceed to delete entry '),
+              TextSpan(
+                text: entry.title ?? '',
+                style: const TextStyle(
+                  color: CupertinoColors.inactiveGray
+                )
+              ),
+              TextSpan(text: ' created on $dateString at $timeString?'),
+            ]
+          ),
+        ),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            /// This parameter indicates this action is the default,
+            /// and turns the action's text to bold text.
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('No'),
+          ),
+          CupertinoDialogAction(
+            /// This parameter indicates the action would perform
+            /// a destructive action such as deletion, and turns
+            /// the action's text color to red.
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+              _onDelete(entry.id!);
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
