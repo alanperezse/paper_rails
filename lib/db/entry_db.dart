@@ -9,7 +9,7 @@ class EntryCollection extends Collection<Entry> {
 
   static Future<EntryCollection> get collection async => _collection ??= await _openCollection();
 
-  Database _db;
+  final Database _db;
 
   // Table
   static const _entryTable = 'Entry';
@@ -43,9 +43,8 @@ class EntryCollection extends Collection<Entry> {
   }
   
   @override
-  Future<Object?> get(int object) {
-    // TODO: implement get
-    throw UnimplementedError();
+  Future<Object?> get(int object) async {
+    return await _db.query(_entryTable, where: '$_id = ?', whereArgs: [object]);
   }
   
   @override
