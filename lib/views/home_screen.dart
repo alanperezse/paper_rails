@@ -81,6 +81,10 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
 
   Widget _entryCard(BuildContext context, Entry entry) {
     final datetime = entry.createdAt;
+    final placeString = entry.placeInfo?.country != null && entry.placeInfo?.locality != null? '• ${entry.placeInfo!.locality}, ${entry.placeInfo!.country}' :
+      entry.placeInfo?.country != null ? '• ${entry.placeInfo!.locality}' :
+      entry.placeInfo?.locality != null ? '• ${entry.placeInfo!.country}' :
+      '';
 
     return Slidable(
       endActionPane: ActionPane(
@@ -118,7 +122,7 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
             const SizedBox(width: 20,),
             Flexible(
               child: Text(
-                '${DateFormat(DateFormat.HOUR_MINUTE).format(entry.createdAt)} • ${entry.placeInfo!.locality}, ${entry.placeInfo!.country}',
+                '${DateFormat(DateFormat.HOUR_MINUTE).format(entry.createdAt)} $placeString',
                 style: const TextStyle(color: Colors.grey),
                 overflow: TextOverflow.ellipsis,
               ),
