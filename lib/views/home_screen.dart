@@ -116,9 +116,12 @@ class _HomeScreen extends State<HomeScreen> with WeatherEvaluator {
               conditionCodeToWidget(entry.weatherInfo?.weatherConditionCode),
             ),
             const SizedBox(width: 20,),
-            Text(
-              '${DateFormat(DateFormat.HOUR_MINUTE).format(entry.createdAt)} • ${entry.placeInfo!.locality}, ${entry.placeInfo!.country}',
-              style: const TextStyle(color: Colors.grey),
+            Flexible(
+              child: Text(
+                '${DateFormat(DateFormat.HOUR_MINUTE).format(entry.createdAt)} • ${entry.placeInfo!.locality}, ${entry.placeInfo!.country}',
+                style: const TextStyle(color: Colors.grey),
+                overflow: TextOverflow.ellipsis,
+              ),
             )
           ],
         ),
