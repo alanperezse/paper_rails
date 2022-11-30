@@ -72,19 +72,28 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
   void _setEntryInfo() async {
     try {
       final position = await determinePosition();
-      final placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-      final placemark = placemarks.first;
-      widget._tempEntry.placeInfo = PlaceInfo(
-        placemark.street,
-        placemark.locality,
-        placemark.country
-      );
 
-      final weather = await determineWeather(position.latitude, position.longitude);
-      widget._tempEntry.weatherInfo = WeatherInfo(
-        weather.temperature?.celsius?.toInt(),
-        weather.weatherConditionCode
-      );
+      final futurePlacemark = placemarkFromCoordinates(position.latitude, position.longitude)
+      .then((placemarks) {
+        final placemark = placemarks.first;
+        widget._tempEntry.placeInfo = PlaceInfo(
+          placemark.street,
+          placemark.locality,
+          placemark.country
+        );
+      });
+
+      final futureWeather = determineWeather(position.latitude, position.longitude)
+      .then((weather) {
+        widget._tempEntry.weatherInfo = WeatherInfo(
+          weather.temperature?.celsius?.toInt(),
+          weather.weatherConditionCode
+        );
+      });
+
+      await futurePlacemark;
+      await futureWeather;
+
     } catch(error) {
       print(error);
     }
