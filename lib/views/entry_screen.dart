@@ -174,6 +174,12 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
       );
     }
 
+    final locationString = placeInfo == null ? 'Unknown location' :
+      (placeInfo.street == null || placeInfo.street!.isEmpty) && (placeInfo.locality == null || placeInfo.locality!.isEmpty) ? 'Unknown location' :
+      placeInfo.street == null || placeInfo.street!.isEmpty ? placeInfo.locality :
+      placeInfo.locality == null || placeInfo.locality!.isEmpty ? placeInfo.street :
+      '${placeInfo.street}, ${placeInfo.locality}';
+
     return Column(
       children: [
         Row(
@@ -183,10 +189,7 @@ class _EntryScreen extends State<EntryScreen> with Locator, WeatherEvaluator {
             ),
             Flexible(
               child: Text(
-                placeInfo == null ?
-                  '  ---' :
-                  '  ${placeInfo.street ?? '---'}, ${placeInfo.locality ?? '---'}'
-                ,
+                '  $locationString',
                 style: const TextStyle(
                   color: Colors.grey
                 ),
